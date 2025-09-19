@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prediction Result</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(to right, #89f7fe, #66a6ff);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .result-container {
+      background: white;
+      padding: 40px 60px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      animation: fadeInScale 1s ease;
+    }
+
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    h1 {
+      color: #2c3e50;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #16a085;
+      margin-bottom: 30px;
+    }
+
+    a {
+      display: inline-block;
+      padding: 12px 28px;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    a:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 114, 255, 0.3);
+    }
+
+    .background-decor {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .background-decor i {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.1;
+      animation: float 14s linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); }
+      100% { transform: translateY(-10vh) rotate(360deg); }
+    }
+
+    .background-decor i:nth-child(1) { left: 15%; animation-delay: 0s; color: #3498db; }
+    .background-decor i:nth-child(2) { left: 35%; animation-delay: 2s; color: #1abc9c; }
+    .background-decor i:nth-child(3) { left: 55%; animation-delay: 4s; color: #f39c12; }
+    .background-decor i:nth-child(4) { left: 75%; animation-delay: 6s; color: #e74c3c; }
+    .background-decor i:nth-child(5) { left: 90%; animation-delay: 1s; color: #9b59b6; }
+  </style>
+</head>
+<body>
+  <div class="background-decor">
+    <i class="fas fa-home"></i>
+    <i class="fas fa-ruler-combined"></i>
+    <i class="fas fa-bed"></i>
+    <i class="fas fa-clock"></i>
+    <i class="fas fa-coins"></i>
+  </div>
+
+  <div class="result-container">
+    <h1>🎯 Predicted outcome</h1>
+    <p>{{ predicted_price }}</p>
+    <a href="/">🔄 Predict Again</a>
+  </div>
+</body>
+</html>

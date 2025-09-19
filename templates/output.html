@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diabetes Risk Assessment - Results</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated medical background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(circle at 20% 80%, rgba(46, 204, 113, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(231, 76, 60, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(52, 152, 219, 0.1) 0%, transparent 50%);
+      animation: float 20s ease-in-out infinite;
+      z-index: -2;
+    }
+
+    .background-decor {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .medical-icon {
+      position: absolute;
+      font-size: 2.5rem;
+      opacity: 0.08;
+      animation: floatMedical 15s linear infinite;
+      color: #fff;
+    }
+
+    @keyframes floatMedical {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% { opacity: 0.08; }
+      90% { opacity: 0.08; }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .medical-icon:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .medical-icon:nth-child(2) { left: 25%; animation-delay: 3s; }
+    .medical-icon:nth-child(3) { left: 40%; animation-delay: 6s; }
+    .medical-icon:nth-child(4) { left: 55%; animation-delay: 9s; }
+    .medical-icon:nth-child(5) { left: 70%; animation-delay: 12s; }
+    .medical-icon:nth-child(6) { left: 85%; animation-delay: 15s; }
+
+    .result-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 50px;
+      border-radius: 30px;
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      text-align: center;
+      max-width: 600px;
+      width: 90%;
+      animation: slideInUp 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(100px) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .result-header {
+      margin-bottom: 40px;
+    }
+
+    .result-icon {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 25px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      color: white;
+      position: relative;
+      animation: pulse 2s infinite;
+    }
+
+    .result-icon.positive {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      box-shadow: 0 20px 40px rgba(231, 76, 60, 0.3);
+    }
+
+    .result-icon.negative {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      box-shadow: 0 20px 40px rgba(46, 204, 113, 0.3);
+    }
+
+    .result-icon::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border-radius: 50%;
+      background: inherit;
+      opacity: 0.3;
+      animation: ripple 3s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes ripple {
+      0% { transform: scale(0.8); opacity: 0.5; }
+      100% { transform: scale(1.2); opacity: 0; }
+    }
+
+    .result-title {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      animation: fadeInDown 1s ease 0.3s both;
+    }
+
+    .result-title.positive {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .result-title.negative {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .result-subtitle {
+      font-size: 1.3rem;
+      color: #7f8c8d;
+      font-weight: 400;
+      margin-bottom: 35px;
+      animation: fadeInDown 1s ease 0.4s both;
+    }
+
+    .result-message {
+      background: rgba(52, 152, 219, 0.1);
+      border-left: 4px solid #3498db;
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 35px;
+      animation: fadeInUp 1s ease 0.5s both;
+    }
+
+    .result-message.positive {
+      background: rgba(231, 76, 60, 0.1);
+      border-left-color: #e74c3c;
+    }
+
+    .result-message.negative {
+      background: rgba(46, 204, 113, 0.1);
+      border-left-color: #2ecc71;
+    }
+
+    .result-message h3 {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    .result-message p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #34495e;
+      margin: 0;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 1s ease 0.6s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 30px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.9);
+      color: #2c3e50;
+      border: 2px solid #e0e6ed;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary:hover {
+      background: white;
+      border-color: #3498db;
+      box-shadow: 0 10px 30px rgba(52, 152, 219, 0.2);
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .health-recommendation {
+      margin-top: 30px;
+      padding: 25px;
+      background: linear-gradient(135deg, rgba(155, 89, 182, 0.1), rgba(142, 68, 173, 0.1));
+      border-radius: 20px;
+      border: 1px solid rgba(155, 89, 182, 0.2);
+      animation: fadeInUp 1s ease 0.7s both;
+    }
+
+    .health-recommendation h4 {
+      color: #8e44ad;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .health-recommendation ul {
+      text-align: left;
+      color: #2c3e50;
+      line-height: 1.8;
+    }
+
+    .health-recommendation li {
+      margin-bottom: 8px;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-20px) rotate(2deg); }
+      66% { transform: translateY(-10px) rotate(-1deg); }
+    }
+
+    @media (max-width: 768px) {
+      .result-container {
+        padding: 30px 25px;
+        margin: 20px;
+      }
+
+      .result-title {
+        font-size: 2.2rem;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-decor">
+    <i class="fas fa-heartbeat medical-icon"></i>
+    <i class="fas fa-user-md medical-icon"></i>
+    <i class="fas fa-pills medical-icon"></i>
+    <i class="fas fa-stethoscope medical-icon"></i>
+    <i class="fas fa-syringe medical-icon"></i>
+    <i class="fas fa-hospital medical-icon"></i>
+  </div>
+
+  <div class="result-container">
+    <div class="result-header">
+      <!-- This will be dynamically set based on prediction -->
+      <div class="result-icon positive" id="resultIcon">
+        <i class="fas fa-exclamation-triangle" id="iconSymbol"></i>
+      </div>
+      <h1 class="result-title positive" id="resultTitle">High Diabetes Risk</h1>
+      <p class="result-subtitle" id="resultSubtitle">Based on your health parameters</p>
+    </div>
+
+    <div class="result-message positive" id="resultMessage">
+      <h3 id="messageTitle">⚠️ Attention Required</h3>
+      <p id="messageContent">
+        Your health parameters indicate a higher risk for diabetes. We recommend consulting with a healthcare professional for proper evaluation and personalized advice.
+      </p>
+    </div>
+
+    <div class="action-buttons">
+      <a href="/" class="btn btn-primary">
+        <i class="fas fa-redo-alt"></i>
+        Test Again
+      </a>
+      <a href="#" class="btn btn-secondary" onclick="showHealthTips()">
+        <i class="fas fa-info-circle"></i>
+        Health Tips
+      </a>
+    </div>
+
+    <div class="health-recommendation" id="healthRecommendation" style="display: none;">
+      <h4>
+        <i class="fas fa-lightbulb"></i>
+        Health Recommendations
+      </h4>
+      <ul id="recommendationList">
+        <!-- Will be populated by JavaScript -->
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Simulate different prediction results - Replace {{ predicted_price }} with actual backend value
+    // For demo purposes, randomly showing different results
+    const predictions = [0, 1];
+    const currentPrediction = predictions[Math.floor(Math.random() * predictions.length)];
+
+    // In your actual implementation, replace the line above with:
+    // const currentPrediction = {{ predicted_price }};
+
+    function updateResultDisplay(prediction) {
+      const resultIcon = document.getElementById('resultIcon');
+      const iconSymbol = document.getElementById('iconSymbol');
+      const resultTitle = document.getElementById('resultTitle');
+      const resultSubtitle = document.getElementById('resultSubtitle');
+      const resultMessage = document.getElementById('resultMessage');
+      const messageTitle = document.getElementById('messageTitle');
+      const messageContent = document.getElementById('messageContent');
+
+      if (prediction === 1) {
+        // High Risk / Diabetic
+        resultIcon.className = 'result-icon positive';
+        iconSymbol.className = 'fas fa-exclamation-triangle';
+        resultTitle.className = 'result-title positive';
+        resultTitle.textContent = 'High Diabetes Risk';
+        resultSubtitle.textContent = 'Immediate attention recommended';
+        resultMessage.className = 'result-message positive';
+        messageTitle.innerHTML = '⚠️ Attention Required';
+        messageContent.textContent = 'Your health parameters indicate a higher risk for diabetes. We strongly recommend consulting with a healthcare professional for proper evaluation, diagnostic tests, and personalized treatment plan.';
+      } else {
+        // Low Risk / Not Diabetic
+        resultIcon.className = 'result-icon negative';
+        iconSymbol.className = 'fas fa-check-circle';
+        resultTitle.className = 'result-title negative';
+        resultTitle.textContent = 'Low Diabetes Risk';
+        resultSubtitle.textContent = 'Your health parameters look good';
+        resultMessage.className = 'result-message negative';
+        messageTitle.innerHTML = '✅ Great News';
+        messageContent.textContent = 'Your current health parameters suggest a lower risk for diabetes. Continue maintaining your healthy lifestyle and regular check-ups to keep your risk low.';
+      }
+    }
+
+    function showHealthTips() {
+      const healthRecommendation = document.getElementById('healthRecommendation');
+      const recommendationList = document.getElementById('recommendationList');
+
+      const tips = currentPrediction === 1 ? [
+        'Schedule an appointment with your doctor for comprehensive diabetes screening',
+        'Monitor your blood glucose levels regularly',
+        'Adopt a low-glycemic diet rich in vegetables and whole grains',
+        'Engage in regular physical activity (150 minutes per week)',
+        'Maintain a healthy weight through proper diet and exercise',
+        'Limit processed foods and sugary beverages',
+        'Consider working with a certified diabetes educator',
+        'Monitor blood pressure and cholesterol levels'
+      ] : [
+        'Continue maintaining a balanced, nutritious diet',
+        'Stay physically active with regular exercise',
+        'Maintain a healthy weight within normal BMI range',
+        'Get regular health check-ups and screenings',
+        'Limit alcohol consumption and avoid smoking',
+        'Manage stress through relaxation techniques',
+        'Stay hydrated and get adequate sleep',
+        'Monitor your health parameters annually'
+      ];
+
+      recommendationList.innerHTML = tips.map(tip => `<li>${tip}</li>`).join('');
+
+      if (healthRecommendation.style.display === 'none') {
+        healthRecommendation.style.display = 'block';
+        healthRecommendation.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        healthRecommendation.style.display = 'none';
+      }
+    }
+
+    // Create floating medical icons periodically
+    function createFloatingIcon() {
+      const icons = ['fa-heartbeat', 'fa-user-md', 'fa-pills', 'fa-stethoscope', 'fa-syringe', 'fa-hospital'];
+      const icon = document.createElement('i');
+      icon.className = `fas ${icons[Math.floor(Math.random() * icons.length)]} medical-icon`;
+      icon.style.left = Math.random() * 100 + '%';
+      icon.style.animationDuration = (Math.random() * 10 + 10) + 's';
+      icon.style.fontSize = (Math.random() * 1.5 + 1.5) + 'rem';
+
+      document.querySelector('.background-decor').appendChild(icon);
+
+      setTimeout(() => {
+        icon.remove();
+      }, 20000);
+    }
+
+    // Initialize the display
+    updateResultDisplay(currentPrediction);
+
+    // Create floating icons periodically
+    setInterval(createFloatingIcon, 3000);
+
+    // Add some initial floating icons
+    for (let i = 0; i < 3; i++) {
+      setTimeout(createFloatingIcon, i * 1000);
+    }
+  </script>
+</body>
+</html>
